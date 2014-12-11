@@ -11,40 +11,29 @@
 
 namespace Silvestra\Bundle\BannerBundle\EventListener;
 
-use Silvestra\Bundle\AdminBundle\Event\AdminMenuEvent;
-use Symfony\Component\Translation\TranslatorInterface;
+use Silvestra\Component\Admin\Menu\AdminMenuItem;
+use Silvestra\Component\Admin\Menu\Event\AdminMenuEventInterface;
+use Silvestra\Component\Admin\Menu\Event\AdminMenuSubscriber;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
  * @since 10/28/14 10:46 PM
  */
-class AdminMenuListener
+class AdminMenuListener extends AdminMenuSubscriber
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
 
     /**
-     * Constructor.
-     *
-     * @param TranslatorInterface $translator
+     * {@inheritdoc}
      */
-    public function __construct(TranslatorInterface $translator)
+    public function build(AdminMenuEventInterface $event)
     {
-        $this->translator = $translator;
-    }
-
-    /**
-     * @param AdminMenuEvent $event
-     */
-    public function onAdminMenu(AdminMenuEvent $event)
-    {
-        $tradedoublerMapper = $event->getMenu()->addChild(
-            $this->translator->trans('title.banner_zone.list', array(), 'SilvestraBanner'),
-            array('route' => 'silvestra_banner.banner_zone_list')
+        $event->addItem(
+            new AdminMenuItem(
+                $this->translator->trans('title.banner_zone.list', array(), 'SilvestraBanner'),
+                $this->router->generate('silvestra_banner.banner_zone_list'),
+                'image'
+            )
         );
-        $tradedoublerMapper->setLabelAttribute('menu_logo', 'fa-image');
     }
 }
